@@ -1,0 +1,18 @@
+[project]
+name = "digup-mcp"
+version = "0.1.0"
+description = "MCP interface to an installed DigUp search engine and its existing indexes"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = ["mcp==1.30.0"]
+
+[project.scripts]
+digup-mcp = "digup_mcp.server:main"
+
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+package = true
