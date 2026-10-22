@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased — 2026-10-22
+
+- Reworked the README into a complete installation walkthrough: explains DigUp, the MCP adapter and Codex;
+  links downloads; covers model/index preparation, uv/Python setup, ZIP installation, desktop/CLI connection,
+  a first real search, headless Linux paths and common errors. Moved contributor/build commands to the end.
+- Verified the public ZIP installation in a temporary Python 3.12 tool environment using the documented command;
+  installed version 0.1.1 with 30 pinned packages. Help/version checks still passed after renaming the source folder.
+  Temporary files were removed; the user's installed MCP and Codex settings were not changed.
+- Checked document links, shell-example syntax and Markdown whitespace. Documentation-only change.
+
 ## 0.1.1 — 2026-10-22
 
 - Prepared the independent repository for public MIT distribution. The existing `LICENSE` and package metadata
