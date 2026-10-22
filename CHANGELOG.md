@@ -1,12 +1,22 @@
 # Changelog
 
-## Unreleased — 2026-10-22
+## 0.1.1 — 2026-10-22
 
+- Prepared the independent repository for public MIT distribution. The existing `LICENSE` and package metadata
+  already declare MIT. Added public-upstream installation links, a clone command and explicit compatibility guidance:
+  a private fork is not required; App Store packaging is not claimed as verified.
+- Fixed empty document results with original DigUp 0.6.2: start its search service with `/` as the explicit
+  whole-index scope. This queries existing indexed paths without crawling or adding a folder filter.
+- Added a regression reproducing the empty-root behavior. It failed before the fix; all nine adapter tests pass.
+  Built and installed version 0.1.1 with the same locked dependency versions.
+- Verified the installed adapter against the original public macOS DigUp 0.6.2 DMG (build 13): three synthetic
+  documents indexed, SDK initialization/status passed, two semantic queries returned the correct files, and indexed
+  passages matched their source texts. No custom DigUp build was used for this check.
 - Added a Russian user guide covering everyday Codex requests, document/code search, passages, index scope,
   normal installed paths and troubleshooting. Linked it from the README.
 - Verified the guide against current tool definitions and official Codex MCP documentation. Live tools in this
   Codex chat successfully returned status, semantic search (`meaning=true`) and a real Obsidian passage.
-- Documentation only; no MCP implementation or Codex configuration changed. Checked Markdown links and whitespace.
+- Checked Markdown links and whitespace; Codex configuration is unchanged.
 
 ## 0.1.0 — 2026-10-21
 

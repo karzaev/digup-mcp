@@ -7,6 +7,7 @@ import sys
 import time
 
 assert sys.argv[1] == "search-service"
+document_scope = sys.argv[2:3] == ["/"]
 print(json.dumps({"event": "ready" if not os.environ.get("DIGUP_TEST_BAD_READY") else "unsupported"}), flush=True)
 for line in sys.stdin:
     message = json.loads(line)
@@ -29,7 +30,8 @@ for line in sys.stdin:
         else:
             code = message.get("code", False)
             reply = dict(id=ident, hits=[dict(path="/fixture/vault/note.md", segment_id=42,
-                                             excerpt="Original indexed passage", kind="code" if code else "doc")],
+                                             excerpt="Original indexed passage", kind="code" if code else "doc")]
+                         if code or document_scope else [],
                          meaning=message.get("meaning", True) and query != "keyword-only", strong=1,
                          ms=dict(embed=1, search=2))
     elif op == "text":

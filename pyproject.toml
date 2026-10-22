@@ -1,6 +1,6 @@
 [project]
 name = "digup-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "MCP interface to an installed DigUp search engine and its existing indexes"
 readme = "README.md"
 requires-python = ">=3.12"

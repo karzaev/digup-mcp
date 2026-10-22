@@ -62,6 +62,10 @@ class EngineTests(unittest.IsolatedAsyncioTestCase):
         results = await asyncio.gather(*[self.engine.request("status") for _ in range(4)])
         self.assertTrue(all(result["files"] == 1 for result in results))
 
+    async def test_document_search_selects_the_whole_existing_index(self):
+        found = await self.engine.request("search", q="a note", meaning=True)
+        self.assertEqual([hit["path"] for hit in found["hits"]], ["/fixture/vault/note.md"])
+
     async def test_errors_restart_the_engine(self):
         for query, expected in [("error", "fixture engine error"), ("exit", "exited"),
                                 ("bad-id", "mismatched"), ("invalid-json", "invalid JSON")]:

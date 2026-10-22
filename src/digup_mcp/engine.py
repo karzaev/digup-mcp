@@ -45,7 +45,8 @@ class Engine:
         return reply
 
     async def _start(self):
-        args = [str(self.config.binary), "search-service", "--index", str(self.config.index)]
+        # DigUp 0.6.2 requires an explicit search scope; '/' selects the whole index without crawling.
+        args = [str(self.config.binary), "search-service", "/", "--index", str(self.config.index)]
         if (self.config.index / "code.sqlite").is_file():
             # This scope selects all existing code hits; search-service never crawls it.
             args += ["--code-root", "/"]

@@ -1,6 +1,7 @@
 # digup-mcp
 
-A standalone MCP adapter for an **installed DigUp search engine and its existing index**, on macOS and Linux.
+A standalone MCP adapter for an **installed [DigUp](https://github.com/ARahim3/DigUp) search engine and its existing
+index**, on macOS and Linux.
 It lets Codex and other MCP clients search local files without opening DigUp's search window.
 
 Русское руководство пользователя: [как пользоваться DigUp MCP в Codex](docs/usage.ru.md).
@@ -15,7 +16,9 @@ Codex ── MCP ── digup-mcp ── DigUp search-service ── DigUp engin
 ## Prerequisites and compatibility
 
 - macOS or Linux, Python 3.12 or newer, and [uv](https://docs.astral.sh/uv/) for the installation commands below.
-- DigUp installed with its model downloaded and files indexed.
+- DigUp installed with its model downloaded and files indexed. Use the original project's
+  [releases](https://github.com/ARahim3/DigUp/releases) or its
+  [public build/install instructions](https://github.com/ARahim3/DigUp#build-from-source).
 - Its CLI must provide `search-service`, with the JSON `ready` handshake and `search`, `text`, `status`, and `reload`
   operations. The adapter checks the handshake when its first tool runs; incompatible builds report an error.
 
@@ -26,11 +29,21 @@ an App Store build has been tested. Verification results for this adapter are re
 On macOS the stock source build packages the full CLI inside `DigUp.app/Contents/Helpers/digup`.
 On Linux distributions may bundle it in the application's resource `helper/` directory.
 **Keep the Linux helper beside its native libraries**; copying the executable alone can break its library paths.
-An original DigUp build or any compatible fork can be used. The adapter need not be rebuilt with the desktop app.
+An original DigUp build or any compatible fork can be used. **A private fork is not a dependency.**
+The adapter need not be rebuilt with the desktop app. A release/package installation or public source build uses
+the same adapter. An App Store edition would also need to expose the compatible helper and accessible index/model
+paths; App Store packaging has not been verified here, and its availability is not assumed.
 
 ## Install
 
-From a checkout, install the locked development environment:
+Install DigUp and let it build its index first. Then obtain and install this independent adapter:
+
+```sh
+git clone https://github.com/karzaev/digup-mcp.git
+cd digup-mcp
+```
+
+Install the locked development environment:
 
 ```sh
 uv sync --locked
@@ -42,7 +55,7 @@ the checkout remaining in place:
 
 ```sh
 uv build
-uv tool install --constraints constraints.txt dist/digup_mcp-0.1.0-py3-none-any.whl
+uv tool install --constraints constraints.txt dist/digup_mcp-0.1.1-py3-none-any.whl
 digup-mcp --help
 ```
 
@@ -123,7 +136,14 @@ the package or this repository. Retrieved passages returned to an MCP client ent
 
 ## Verified builds
 
-On 2026-10-21 the compatible `karzaev/DigUp` fork (upstream base `7db9537`, app metadata `0.6.1`, build 12) was tested:
+On 2026-10-22, MCP **0.1.1** was tested with the original public
+[DigUp 0.6.2 macOS release](https://github.com/ARahim3/DigUp/releases/tag/v0.6.2), build 13:
+its bundled helper indexed three synthetic notes in a fresh index, then the installed MCP passed SDK initialization,
+tool discovery, status, two semantic searches at normal defaults, and source-matching passage retrieval.
+No custom DigUp build or private fork was used in that check. Nine adapter tests passed, including the regression
+for the explicit whole-index scope required by DigUp 0.6.2.
+
+On 2026-10-21 a compatible development build (upstream base `7db9537`, app metadata `0.6.1`, build 12) was tested:
 
 - macOS on Apple Silicon, Swift 6.4, Python 3.14: installed `/Applications/DigUp.app` helper, existing main/code
   indexes, semantic search and source passage retrieval. A real Git-backed Obsidian note was indexed and found via
@@ -135,8 +155,8 @@ On 2026-10-21 the compatible `karzaev/DigUp` fork (upstream base `7db9537`, app 
 - Eight adapter tests passed on each platform. The Linux paraphrase CLI check used `--zgate 0` because its tiny
   three-document corpus cannot reach the default semantic z-score gate; MCP used `V60 coffee` at normal defaults.
 
-Original released DigUp packages have not been runtime-tested here. Compatibility with them is based on the inspected
-upstream process protocol above. If a code index is first created after the MCP service starts, restart MCP to detect it.
+App Store editions and original Linux release packages have not been runtime-tested here. If a code index is first
+created after the MCP service starts, restart MCP to detect it.
 
 ## Development and release
 
@@ -150,3 +170,7 @@ Do not infer semantic success from a valid connection or a keyword-only response
 The MCP adapter is independently versioned. Release compatibility follows the engine's process protocol; desktop
 updates need no adapter change while that protocol remains compatible. Upstream protocol changes require an adapter
 test/update rather than a rewrite of DigUp's search logic.
+
+## License
+
+[MIT](LICENSE), the same license used by the upstream DigUp project. DigUp itself is installed separately.
