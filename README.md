@@ -165,6 +165,70 @@ After that, use ordinary requests such as “Find my notes about…”, “Searc
 You can close the DigUp window for searches against the existing index. Keep its indexing process running when you
 want new and changed files to be picked up automatically. Docker is not required for this setup.
 
+## Optional skill: a short search command
+
+Install the included [DigUp skill](skills/digup/SKILL.md) to select this search workflow without repeating
+“use DigUp” in each request. It uses the same MCP tools; **installing the skill does not install or connect MCP**.
+Complete the adapter setup above first. The skill is included in this repository/ZIP, separately from the Python package.
+
+Run the following commands from the extracted repository folder. If a `digup` skill already exists at the
+destination, review it before replacing it; the copy command can overwrite its files.
+
+### Install the skill in Codex
+
+Copy it to your personal skills folder, available across local projects on macOS and Linux:
+
+```sh
+mkdir -p "$HOME/.agents/skills"
+cp -R skills/digup "$HOME/.agents/skills/"
+```
+
+The installed copy is independent of the extracted repository. Codex detects new skills automatically; if it does
+not appear, start a new chat or restart Codex. No change to `config.toml` is needed for the skill itself.
+
+In the desktop app, type `/` and select **digup** from the enabled skills, or type `$` and select **DigUp**.
+Then add your request, for example:
+
+```text
+$digup Find notes about knowledge management and show the matching passages.
+```
+
+Codex CLI also supports `$digup`, or `/skills` followed by selecting the skill. See the official
+[desktop slash-command reference](https://learn.chatgpt.com/docs/reference/slash-commands) and
+[skill installation guide](https://learn.chatgpt.com/docs/build-skills).
+
+### Install the skill in Claude Code
+
+Claude Code uses its own personal skills folder:
+
+```sh
+mkdir -p "$HOME/.claude/skills"
+cp -R skills/digup "$HOME/.claude/skills/"
+```
+
+The same `SKILL.md` works in both clients. If DigUp MCP is not yet connected to Claude Code, register the installed
+adapter for your local projects:
+
+```sh
+claude mcp add --transport stdio --scope user digup -- "$(uv tool dir --bin)/digup-mcp"
+claude mcp get digup
+```
+
+Custom DigUp paths can be added after the adapter executable, as described in [Configure DigUp paths](#configure-digup-paths).
+Start a new Claude Code session if the connection or skill does not appear, check `/mcp`, then invoke:
+
+```text
+/digup Find notes about knowledge management and show the matching passages.
+```
+
+See the official [Claude Code skills](https://code.claude.com/docs/en/skills) and
+[MCP setup](https://code.claude.com/docs/en/mcp) instructions. This personal installation is for local Claude Code;
+it does not install the skill in Claude web, Cowork or cloud sessions.
+
+In either client, try a known indexed file and ask for its passage to verify the complete workflow. You can request
+PDFs or source code, but the skill cannot add a folder/vault filter: the current MCP searches the whole index.
+Selecting returned paths from one folder is not an exhaustive search of that folder.
+
 ## Linux without a graphical session
 
 **This section starts with a working DigUp CLI and its native libraries already installed on the VPS.**

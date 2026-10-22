@@ -2,6 +2,16 @@
 
 ## Unreleased — 2026-10-22
 
+- Added the portable `skills/digup/SKILL.md` workflow and Codex UI metadata. It uses the existing MCP search,
+  passage and status tools, preserves main/code index selection, and explains the current folder-scope limitation.
+- Added Codex and Claude Code skill installation/invocation instructions to the README and Russian guide,
+  including separate Claude STDIO registration. Installed an independent copy in the local Codex user skills folder;
+  no MCP runtime or Codex configuration change was needed.
+- Both the repository skill and installed copy pass the skill validator. The user confirmed `/digup` appears in
+  the desktop Codex suggestions. A read-only skill smoke test returned semantic results (`meaning=true`) and
+  retrieved indexed text; the exact requested document title was not found, so this does not certify index coverage.
+  Independent review checked tool parameters, portable installation and invocation. Claude Code was documented,
+  not installed or runtime-tested in this check.
 - Reworked the README into a complete installation walkthrough: explains DigUp, the MCP adapter and Codex;
   links downloads; covers model/index preparation, uv/Python setup, ZIP installation, desktop/CLI connection,
   a first real search, headless Linux paths and common errors. Moved contributor/build commands to the end.

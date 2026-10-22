@@ -1,0 +1,10 @@
+interface:
+  display_name: "DigUp"
+  short_description: "Search indexed local files through DigUp MCP"
+  default_prompt: "Use $digup to find relevant local documents and show matching passages with file paths."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "digup"
+      description: "Installed DigUp MCP server with search, get_passage and status tools"
