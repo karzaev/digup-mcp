@@ -1,12 +1,16 @@
 # digup-mcp
 
-Search the files that [DigUp](https://github.com/ARahim3/DigUp) has indexed, directly from Codex.
+Search the files that [DigUp](https://github.com/ARahim3/DigUp) has indexed, directly from Codex, Hermes Desktop
+or another MCP client.
 For example: “Use DigUp to find my notes about knowledge management, then show the matching passages and file paths.”
 
 Works on **macOS and Linux**, with the original public DigUp application or a compatible CLI installation.
 A private fork is not required.
 
 Русское руководство пользователя: [как пользоваться DigUp MCP в Codex](docs/usage.ru.md).
+
+Using **Hermes Desktop**? Follow [the local-index walkthrough](#connect-hermes-desktop-to-your-local-index).
+You do not need to install Codex.
 
 ## What you need, and why
 
@@ -16,17 +20,17 @@ There are three separate parts:
 | --- | --- | --- |
 | **DigUp** | Reads the folders you choose, downloads its search model and builds the local index. | [Original DigUp releases](https://github.com/ARahim3/DigUp/releases) |
 | **digup-mcp** | Connects that existing index to an AI client. This repository contains this adapter. | [Download this repository](https://github.com/karzaev/digup-mcp/archive/refs/heads/main.zip) |
-| **Codex** | The application where you ask questions and use the search results. | Use your existing Codex client, or follow the [official Codex CLI setup](https://learn.chatgpt.com/docs/codex/cli). |
+| **An MCP client** | The application where you ask questions and use the search results. Choose one. | Use your existing client, or install [Hermes Desktop](https://hermes-agent.nousresearch.com/desktop) or [Codex CLI](https://learn.chatgpt.com/docs/codex/cli). |
 
 The adapter is written in Python. The instructions below use **uv** to install Python and keep the adapter's
 dependencies in a separate environment; you do not need a separate Python installer or a manual MCP SDK installation.
 
 ```text
-Codex ── MCP ── digup-mcp ── DigUp search-service ── DigUp engine/model/index
+Your MCP client ── MCP ── digup-mcp ── DigUp search-service ── DigUp engine/model/index
 ```
 
 **Installing this adapter alone does not index your files.** First set up DigUp, then install the adapter and connect
-it to Codex. If DigUp already searches your files, skip to [step 2](#2-install-uv-and-python).
+it to your chosen client. If DigUp already searches your files, skip to [step 2](#2-install-uv-and-python).
 
 ## Install
 
@@ -102,8 +106,9 @@ terminal. Then check:
 digup-mcp --help
 ```
 
-You should see the adapter's options. This confirms installation; the real search check is in
-[step 5](#try-your-first-search). Do not leave a bare `digup-mcp` running in a terminal: it waits for an MCP client
+You should see the adapter's options. This confirms installation; verify an actual search after connecting
+[Codex](#try-your-first-search) or [Hermes Desktop](#connect-hermes-desktop-to-your-local-index).
+Do not leave a bare `digup-mcp` running in a terminal: it waits for an MCP client
 to send requests and does not open a search window.
 
 ## Connect Codex
@@ -147,6 +152,113 @@ It checks registration, not whether a document can be found. Start a new Codex s
 If `codex` is not installed, either use the desktop settings above or install the CLI using the
 [official setup instructions](https://learn.chatgpt.com/docs/codex/cli). That setup also explains signing in.
 This MCP connection is local to the computer running Codex; configuring it does not expose another machine's files.
+
+## Connect Hermes Desktop to your local index
+
+This walkthrough is for **Nous Research's Hermes Desktop** on macOS or Linux. Each person uses their own DigUp
+installation and index on their own computer. The adapter's supported platforms remain macOS and Linux,
+even though Hermes itself also offers other platforms.
+
+### 1. Install Hermes Desktop and choose the local agent
+
+If Hermes Desktop is not installed, download it from the [official product page](https://hermes-agent.nousresearch.com/desktop)
+and follow its [installation and onboarding guide](https://hermes-agent.nousresearch.com/docs/user-guide/desktop).
+Finish the provider/model setup so you can send an ordinary chat message. Existing Hermes users can keep their setup.
+
+Use the **local gateway/connection and the profile you want to search from**. In recent versions, connection choices
+are under **Settings → Gateways**. A Desktop window on your laptop can also control an agent on a VPS or in Hermes
+Cloud; that agent cannot run your laptop's adapter or read its local index automatically. This walkthrough keeps
+Hermes, DigUp and the adapter on the same computer.
+
+### 2. Prepare your own DigUp index
+
+Follow [Install DigUp and prepare its index](#1-install-digup-and-prepare-its-index): download the original DigUp,
+select your folders, wait for its model download/indexing, then find a known file in DigUp itself.
+If your existing installation already finds that file, reuse it. Do not copy another person's index or create
+a second one for Hermes.
+
+### 3. Install the adapter
+
+Follow [Install uv and Python](#2-install-uv-and-python), then
+[Download and install digup-mcp](#3-download-and-install-digup-mcp). These are the shared installation steps;
+skip **Connect Codex**. No Codex installation, Codex account or skill is needed for Hermes MCP search.
+
+On the same computer, open a terminal and print the installed adapter's full path:
+
+```sh
+printf '%s/digup-mcp\n' "$(uv tool dir --bin)"
+```
+
+Copy the result. It will typically look like `/Users/yourname/.local/bin/digup-mcp` on macOS or
+`/home/yourname/.local/bin/digup-mcp` on Linux. Use your own printed path, not these example usernames.
+
+### 4. Add the local MCP server in Hermes Desktop
+
+In current Hermes Desktop, open **Capabilities → Connectors**. In **Configuring:**, select the **same local
+connection and profile** as your chat, then choose **Add your own**. The dialog is called **Connect to a custom MCP**.
+Older releases may place MCP servers in Settings; the terminal alternative below also works with the shared
+Hermes configuration. Enter:
+
+| Field | Value |
+| --- | --- |
+| Name | `digup` |
+| Type | `STDIO` — a local program |
+| Command to launch | The full adapter path printed in step 3 |
+| Arguments | Leave empty for a standard DigUp installation. |
+| Environment variables | Leave empty for a standard DigUp installation. |
+| Working directory | Leave empty. The installed adapter does not depend on a source folder. |
+
+Click **Save** and check that the server is enabled. This connection uses a local executable, so there is no MCP
+server URL or additional API key to enter. Do not paste the `printf` command or `digup-mcp --help` into the Command field.
+If your DigUp executable, index or models use custom locations, add `--binary`, `--index` and `--models` with
+their actual paths as arguments; see [Configure DigUp paths](#configure-digup-paths).
+
+**Terminal alternative:** if you prefer the Hermes CLI, run the following instead of adding the same server again
+in the GUI. Use the same local Hermes profile as Desktop:
+
+```sh
+hermes mcp add digup --command "$(uv tool dir --bin)/digup-mcp"
+hermes mcp test digup
+```
+
+For a named profile, put `--profile your-profile` immediately after `hermes` in both commands. If `digup` already
+exists, inspect/edit that entry instead of creating a duplicate. The terminal and Desktop share Hermes settings.
+The test checks the MCP connection; the document search in step 6 verifies the index and text retrieval.
+See the official [Hermes MCP command reference](https://hermes-agent.nousresearch.com/docs/reference/cli-commands#hermes-mcp).
+
+### 5. Load the tools in your chat
+
+Start a new Hermes Desktop chat on that local connection/profile, or use `/reload-mcp` in a running chat.
+Check the server's tools: DigUp exposes `search`, `get_passage` and `status`. Hermes registers them as
+`mcp_digup_search`, `mcp_digup_get_passage` and `mcp_digup_status`; you normally ask for the task in plain language.
+If Hermes offers a tool-selection checklist, keep all three enabled.
+
+### 6. Verify a search against a file you know
+
+Ask in Hermes Desktop:
+
+> Use DigUp MCP to check the index status, find the document called “Project plan”, and retrieve its matching passage.
+> Show the full file path and say whether semantic search actually ran.
+
+Replace “Project plan” with the known file from step 2. Expand the tool activity and confirm that Hermes called
+DigUp's search and passage tools. Compare the returned path and text with your original document. A connected
+server or an answer written without a tool call is not a successful search check.
+
+`meaning: true` in the search reply confirms semantic search. If it returns `meaning: false` with a warning,
+Hermes should report keyword-only results and the reason. The first search after idle time may take longer.
+Once this works, ask ordinary questions such as “Use DigUp to find my notes about…” or “Search my PDFs for…”.
+
+You can close the DigUp window when searching the existing index. Let DigUp keep indexing in the background when
+you want it to pick up new or changed files. Searching does not create an index or start a model download.
+
+If the tools do not appear, check that the entry is enabled on the **local connection and the same profile as the
+chat**, then reload MCP or start a new chat. For a missing helper/index or a missing file, check the
+[DigUp paths](#configure-digup-paths) and [troubleshooting table](#troubleshooting).
+Hermes does not provide access to a colleague's index merely by installing this adapter.
+
+For the client-side behavior, see the official [Hermes MCP guide](https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp).
+The current custom-server UI is also available in the public
+[Hermes Desktop source](https://github.com/NousResearch/hermes-agent/blob/main/apps/desktop/src/app/capabilities/connectors/add-server-form.tsx).
 
 ## Try your first search
 
@@ -354,6 +466,9 @@ On 2026-10-21 a compatible development build (upstream base `7db9537`, app metad
 
 App Store editions and original Linux release packages have not been runtime-tested here. If a code index is first
 created after the MCP service starts, restart MCP to detect it.
+
+The Hermes Desktop walkthrough was checked against the official Hermes documentation and current public UI source
+on 2026-10-22. It describes standard STDIO compatibility; a live Hermes Desktop connection has not been tested here.
 
 ## Development and release
 

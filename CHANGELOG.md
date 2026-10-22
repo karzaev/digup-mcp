@@ -2,6 +2,12 @@
 
 ## Unreleased — 2026-10-22
 
+- Added a step-by-step Hermes Desktop walkthrough for each user's local macOS/Linux DigUp index: component
+  installation links, local connection/profile selection, current Connectors form fields, a CLI alternative,
+  MCP reload and verification against a known file and its indexed passage. Codex is not a prerequisite.
+- Checked Hermes commands and UI labels against official documentation and public source. Checked Markdown links,
+  heading anchors, shell-example syntax and whitespace. This is documentation-only; Hermes was not installed or
+  connected for a runtime test, and local indexes, models and client settings were not changed.
 - Added the portable `skills/digup/SKILL.md` workflow and Codex UI metadata. It uses the existing MCP search,
   passage and status tools, preserves main/code index selection, and explains the current folder-scope limitation.
 - Added Codex and Claude Code skill installation/invocation instructions to the README and Russian guide,
