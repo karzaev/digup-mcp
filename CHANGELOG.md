@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — 2026-10-22
+
+- Added a Russian user guide covering everyday Codex requests, document/code search, passages, index scope,
+  normal installed paths and troubleshooting. Linked it from the README.
+- Verified the guide against current tool definitions and official Codex MCP documentation. Live tools in this
+  Codex chat successfully returned status, semantic search (`meaning=true`) and a real Obsidian passage.
+- Documentation only; no MCP implementation or Codex configuration changed. Checked Markdown links and whitespace.
+
 ## 0.1.0 — 2026-10-21
 
 - Added a standalone macOS/Linux MCP adapter using the official Python MCP SDK and DigUp's existing process API.

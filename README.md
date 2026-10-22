@@ -3,6 +3,8 @@
 A standalone MCP adapter for an **installed DigUp search engine and its existing index**, on macOS and Linux.
 It lets Codex and other MCP clients search local files without opening DigUp's search window.
 
+Русское руководство пользователя: [как пользоваться DigUp MCP в Codex](docs/usage.ru.md).
+
 The adapter uses the official Python MCP SDK. It calls DigUp's existing `search-service` process protocol;
 it does not implement another indexer, query the SQLite schema, bundle a model, or require a custom DigUp fork.
 
